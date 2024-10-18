@@ -1,5 +1,6 @@
 package com.lzcalderaro.registrationClient.screens;
 
+import com.lzcalderaro.registrationClient.dao.ClientDAO;
 import com.lzcalderaro.registrationClient.entities.Client;
 import com.lzcalderaro.registrationClient.screens.components.Button;
 import com.lzcalderaro.registrationClient.screens.components.Row;
@@ -91,6 +92,9 @@ public class RegisterClient extends JFrame {
         String mobile = mobileField.getText();
 
         Client client = new Client(name, email, id, mobile);
+
+        ClientDAO clientDAO = new ClientDAO();
+        clientDAO.addClient(client);
 
         if (name.isEmpty() || email.isEmpty() || id.isEmpty() || mobile.isEmpty()) {
             JOptionPane.showMessageDialog(this, "All fields must be filled out.", "Error", JOptionPane.ERROR_MESSAGE);
