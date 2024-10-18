@@ -14,10 +14,13 @@ public class RegisterClient extends JFrame {
     private final JTextField emailField;
     private final JTextField idField;
     private final JTextField mobileField;
+    private MainScreen mainScreen;
 
-    public RegisterClient() {
+    public RegisterClient(MainScreen mainScreen) {
 
-        super("Client Registration Form");
+        this.mainScreen = mainScreen;
+
+        setLocation(mainScreen.getX(), mainScreen.getY());
 
         try {
             // Force the "Metal" Look and Feel
@@ -72,7 +75,10 @@ public class RegisterClient extends JFrame {
         add(paddedPanel, BorderLayout.CENTER);
 
         saveButton.addActionListener(e -> saveClientData());
-        closeButton.addActionListener(e -> dispose());
+        closeButton.addActionListener(e -> {
+            dispose();
+            mainScreen.setVisible(true);
+        });
 
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setVisible(true);
