@@ -16,10 +16,13 @@ public class RegisterClient extends JFrame {
     private final JTextField idField;
     private final JTextField mobileField;
     private MainScreen mainScreen;
+    private Client client;
 
-    public RegisterClient(MainScreen mainScreen) {
+    public RegisterClient(MainScreen mainScreen, Client client) {
 
         this.mainScreen = mainScreen;
+
+        this.client = client;
 
         setLocation(mainScreen.getX(), mainScreen.getY());
 
@@ -30,6 +33,7 @@ public class RegisterClient extends JFrame {
             e.printStackTrace();
         }
 
+        setTitle(client == null ? "Register New Client" : "Edit Client");
         setSize(500, 400);
         setLayout(new BorderLayout());
 
@@ -60,8 +64,15 @@ public class RegisterClient extends JFrame {
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 0));
         buttonPanel.setBackground(Color.WHITE);
 
+        if (client != null) {
+            nameField.setText(client.getName());
+            emailField.setText(client.getEmail());
+            mobileField.setText(client.getMobileNumber());
+            idField.setText(client.getIdentityNumber());
+        }
+
         Button button = new Button();
-        JButton saveButton = button.create("Save");
+        JButton saveButton = button.create(client == null ? "Save" : "Update");
         JButton closeButton = button.create("Close");
 
         buttonPanel.add(saveButton);
@@ -91,15 +102,25 @@ public class RegisterClient extends JFrame {
         String id = idField.getText();
         String mobile = mobileField.getText();
 
-        Client client = new Client(name, email, id, mobile);
-
         ClientDAO clientDAO = new ClientDAO();
-        clientDAO.addClient(client);
+
+        if (client == null) {
+            Client client = new Client(name, email, id, mobile);
+            clientDAO.addClient(client);
+        } else {
+            client.setName(name);
+            client.setEmail(email);
+            client.setMobileNumber(mobile);
+            client.setIdentityNumber(id);
+            clientDAO.updateClient(client);
+        }
 
         if (name.isEmpty() || email.isEmpty() || id.isEmpty() || mobile.isEmpty()) {
             JOptionPane.showMessageDialog(this, "All fields must be filled out.", "Error", JOptionPane.ERROR_MESSAGE);
         } else {
-            JOptionPane.showMessageDialog(this, "Client data saved successfully!" + System.lineSeparator() + client);
+            mainScreen.loadData();
+            dispose();
+            mainScreen.setVisible(true);
         }
     }
 

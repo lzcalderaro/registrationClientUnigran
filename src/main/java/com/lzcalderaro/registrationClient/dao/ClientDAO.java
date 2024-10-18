@@ -7,6 +7,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class ClientDAO {
@@ -71,6 +73,28 @@ public class ClientDAO {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    public List<Client> getAllClients() {
+        List<Client> clients = new ArrayList<>();
+        String sql = "SELECT * FROM clients";
+        try (Connection connection = getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(sql);
+             ResultSet resultSet = preparedStatement.executeQuery()) {
+            while (resultSet.next()) {
+                Client client = new Client(
+                        resultSet.getInt("id"),
+                        resultSet.getString("name"),
+                        resultSet.getString("email"),
+                        resultSet.getString("mobile_number"),
+                        resultSet.getString("identity_number")
+                );
+                clients.add(client);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return clients;
     }
 
     private Connection getConnection() {
